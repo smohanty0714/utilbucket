@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+
+{% block page_header %}
+<title>DB Util</title>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="container">
+    <!-- Image and text -->
+
+  <div class="row">
+      <div class="col">
+        <div class="card border-primary text-center m-1">
+          <div class="card-header text-primary font-weight-bold">
+            SQL Query
+          </div>
+          <div class="card-body">
+
+                 {% csrf_token %}
+                <textarea class="form-control" id="query_field" name="query" rows="22"></textarea>
+
+                <button type="button" class="btn btn-primary btn-lg btn-block my-1 p-3" id="convert_btn">Parse</button>
+          </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card border-primary text-center m-1">
+          <div class="card-header text-primary font-weight-bold">
+            RESULT
+          </div>
+          <div class="card-body">
+            <textarea class="form-control"  id="result_content" rows="25"></textarea>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+ <script>
+    $("#convert_btn").click(function () {
+      var query = $("#query_field").val();
+      $.ajax({
+        url: 'ajax/convert_query/',
+        method: "POST",
+        data: {
+          'query': query,
+          'csrfmiddlewaretoken': $( "input[name='csrfmiddlewaretoken']" ).val()
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data) {
+            $("#result_content")[0].value = JSON.stringify(data, null, 4);
+          }
+        }
+      });
+    });
+  </script>
+{% endblock %}
+
+
